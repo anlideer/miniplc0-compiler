@@ -87,16 +87,33 @@ namespace miniplc0 {
 						break;
 					case '-':
 						// 请填空：切换到减号的状态
+						current_state = DFAState::MINUS_SIGN_STATE;
+						break;
 					case '+':
 						// 请填空：切换到加号的状态
+						current_state = DFAState::PLUS_SIGN_STATE;
+						break;
 					case '*':
 						// 请填空：切换状态
+						current_state = DFAState::MULTIPLICATION_SIGN_STATE;
+						break;
 					case '/':
 						// 请填空：切换状态
+						current_state = DFAState::DIVISION_SIGN_STATE;
+						break;
 
 					///// 请填空：
 					///// 对于其他的可接受字符
 					///// 切换到对应的状态
+					case ';':
+						current_state = DFAState::SEMICOLON_STATE;
+						break;
+					case '(':
+						current_state = DFAState::LEFTBRACKET_STATE;
+						break;
+					case ')':
+						current_state = DFAState::RIGHTBRACKET_STATE;
+						break;
 
 					// 不接受的字符导致的不合法的状态
 					default:
@@ -144,7 +161,12 @@ namespace miniplc0 {
 								   // 如果当前状态是加号
 			case PLUS_SIGN_STATE: {
 				// 请思考这里为什么要回退，在其他地方会不会需要
-				unreadLast(); // Yes, we unread last char even if it's an EOF.
+				// Actually, I think every Vt which has only one letter needs to unread, for they won't actually handle current_char. 
+				// What they handle here is actually the last current_char (in this case, '+'.), which made the state changed.
+				// If we don't do the process of unread, we'll skip the current_char in this loop.
+				// (I'm lazy so I can't type in Chinese :)
+				// So, +, -, =, (, ), ;, *, / They all need to unread.
+				unreadLast(); // Yes, we unread last char even if it's an EOF.	// If it's an EOF, we can still leave it for the next loop.
 				return std::make_pair(std::make_optional<Token>(TokenType::PLUS_SIGN, '+', pos, currentPos()), std::optional<CompilationError>());
 			}
 								  // 当前状态为减号的状态
