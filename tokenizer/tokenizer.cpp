@@ -146,7 +146,7 @@ namespace miniplc0 {
 				{
 					try
 					{
-						int32_t tmp = std::stoi(ss.str());
+						int tmp = std::stoi(ss.str());
 						return std::make_pair(std::make_optional<Token>(TokenType::UNSIGNED_INTEGER, tmp, pos, currentPos()), std::optional<CompilationError>());
 					}
 					catch(std::invalid_argument&)
@@ -172,7 +172,7 @@ namespace miniplc0 {
 					unreadLast();
 					try
 					{
-						int32_t tmp = std::stoi(ss.str());
+						int tmp = std::stoi(ss.str());
 						return std::make_pair(std::make_optional<Token>(TokenType::UNSIGNED_INTEGER, tmp, pos, currentPos()), std::optional<CompilationError>());
 					}
 					catch(std::invalid_argument&)
