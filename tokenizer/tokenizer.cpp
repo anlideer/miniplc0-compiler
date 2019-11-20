@@ -146,7 +146,7 @@ namespace miniplc0 {
 				{
 					try
 					{
-						int tmp = std::stoi(ss.str());
+						int32_t tmp = std::stoi(ss.str());
 						return std::make_pair(std::make_optional<Token>(TokenType::UNSIGNED_INTEGER, tmp, pos, currentPos()), std::optional<CompilationError>());
 					}
 					catch(std::invalid_argument&)
@@ -172,7 +172,7 @@ namespace miniplc0 {
 					unreadLast();
 					try
 					{
-						int tmp = std::stoi(ss.str());
+						int32_t tmp = std::stoi(ss.str());
 						return std::make_pair(std::make_optional<Token>(TokenType::UNSIGNED_INTEGER, tmp, pos, currentPos()), std::optional<CompilationError>());
 					}
 					catch(std::invalid_argument&)
@@ -191,24 +191,24 @@ namespace miniplc0 {
 				{
 					if (ss.str() == "begin")
 					{
-						return std::make_pair(std::make_optional<Token>(TokenType::BEGIN, "begin", pos, currentPos()), std::optional<CompilationError>());
+						return std::make_pair(std::make_optional<Token>(TokenType::BEGIN, ss.str(), pos, currentPos()), std::optional<CompilationError>());
 
 					}
 					else if (ss.str() == "end")
 					{
-						return std::make_pair(std::make_optional<Token>(TokenType::END, "end", pos, currentPos()), std::optional<CompilationError>());
+						return std::make_pair(std::make_optional<Token>(TokenType::END, ss.str(), pos, currentPos()), std::optional<CompilationError>());
 					}
 					else if (ss.str() == "var")
 					{
-						return std::make_pair(std::make_optional<Token>(TokenType::VAR, "var", pos, currentPos()), std::optional<CompilationError>());
+						return std::make_pair(std::make_optional<Token>(TokenType::VAR, ss.str(), pos, currentPos()), std::optional<CompilationError>());
 					}
 					else if (ss.str() == "print")
 					{
-						return std::make_pair(std::make_optional<Token>(TokenType::PRINT, "print", pos, currentPos()), std::optional<CompilationError>());
+						return std::make_pair(std::make_optional<Token>(TokenType::PRINT, ss.str(), pos, currentPos()), std::optional<CompilationError>());
 					}
 					else if (ss.str() == "const")
 					{
-						return std::make_pair(std::make_optional<Token>(TokenType::CONST, "const", pos, currentPos()), std::optional<CompilationError>());
+						return std::make_pair(std::make_optional<Token>(TokenType::CONST, ss.str(), pos, currentPos()), std::optional<CompilationError>());
 					}
 					else
 					{
@@ -228,24 +228,24 @@ namespace miniplc0 {
 					unreadLast();
 					if (ss.str() == "begin")
 					{
-						return std::make_pair(std::make_optional<Token>(TokenType::BEGIN, "begin", pos, currentPos()), std::optional<CompilationError>());
+						return std::make_pair(std::make_optional<Token>(TokenType::BEGIN, ss.str(), pos, currentPos()), std::optional<CompilationError>());
 
 					}
 					else if (ss.str() == "end")
 					{
-						return std::make_pair(std::make_optional<Token>(TokenType::END, "end", pos, currentPos()), std::optional<CompilationError>());
+						return std::make_pair(std::make_optional<Token>(TokenType::END, ss.str(), pos, currentPos()), std::optional<CompilationError>());
 					}
 					else if (ss.str() == "var")
 					{
-						return std::make_pair(std::make_optional<Token>(TokenType::VAR, "var", pos, currentPos()), std::optional<CompilationError>());
+						return std::make_pair(std::make_optional<Token>(TokenType::VAR, ss.str(), pos, currentPos()), std::optional<CompilationError>());
 					}
 					else if (ss.str() == "print")
 					{
-						return std::make_pair(std::make_optional<Token>(TokenType::PRINT, "print", pos, currentPos()), std::optional<CompilationError>());
+						return std::make_pair(std::make_optional<Token>(TokenType::PRINT, ss.str(), pos, currentPos()), std::optional<CompilationError>());
 					}
 					else if (ss.str() == "const")
 					{
-						return std::make_pair(std::make_optional<Token>(TokenType::CONST, "const", pos, currentPos()), std::optional<CompilationError>());
+						return std::make_pair(std::make_optional<Token>(TokenType::CONST, ss.str(), pos, currentPos()), std::optional<CompilationError>());
 					}
 					else
 					{
