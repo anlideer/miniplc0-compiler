@@ -189,24 +189,24 @@ namespace miniplc0 {
 				//     如果解析结果是关键字，那么返回对应关键字的token，否则返回标识符的token
 				if (!current_char.has_value())
 				{
-					if (ss == "BEGIN")
+					if (ss.str() == "BEGIN")
 					{
 						return std::make_pair(std::make_optional<Token>(TokenType::BEGIN, ss, pos, currentPos()), std::optional<CompilationError>());
 
 					}
-					else if (ss == "END")
+					else if (ss.str() == "END")
 					{
 						return std::make_pair(std::make_optional<Token>(TokenType::END, ss, pos, currentPos()), std::optional<CompilationError>());
 					}
-					else if (ss == "VAR")
+					else if (ss.str() == "VAR")
 					{
 						return std::make_pair(std::make_optional<Token>(TokenType::VAR, ss, pos, currentPos()), std::optional<CompilationError>());
 					}
-					else if (ss == "PRINT")
+					else if (ss.str() == "PRINT")
 					{
 						return std::make_pair(std::make_optional<Token>(TokenType::PRINT, ss, pos, currentPos()), std::optional<CompilationError>());
 					}
-					else if (ss == "CONST")
+					else if (ss.str() == "CONST")
 					{
 						return std::make_pair(std::make_optional<Token>(TokenType::CONST, ss, pos, currentPos()), std::optional<CompilationError>());
 					}
@@ -226,24 +226,24 @@ namespace miniplc0 {
 				else
 				{
 					unreadLast();
-					if (ss == "BEGIN")
+					if (ss.str() == "BEGIN")
 					{
 						return std::make_pair(std::make_optional<Token>(TokenType::BEGIN, ss, pos, currentPos()), std::optional<CompilationError>());
 
 					}
-					else if (ss == "END")
+					else if (ss.str() == "END")
 					{
 						return std::make_pair(std::make_optional<Token>(TokenType::END, ss, pos, currentPos()), std::optional<CompilationError>());
 					}
-					else if (ss == "VAR")
+					else if (ss.str() == "VAR")
 					{
 						return std::make_pair(std::make_optional<Token>(TokenType::VAR, ss, pos, currentPos()), std::optional<CompilationError>());
 					}
-					else if (ss == "PRINT")
+					else if (ss.str() == "PRINT")
 					{
 						return std::make_pair(std::make_optional<Token>(TokenType::PRINT, ss, pos, currentPos()), std::optional<CompilationError>());
 					}
-					else if (ss == "CONST")
+					else if (ss.str() == "CONST")
 					{
 						return std::make_pair(std::make_optional<Token>(TokenType::CONST, ss, pos, currentPos()), std::optional<CompilationError>());
 					}
@@ -300,12 +300,12 @@ namespace miniplc0 {
 			// (
 			case LEFTBRACKET_STATE: {
 				unreadLast();
-				return std::make_pair(std::make_optional<Token>(TokenType::LEFTBRACKET, '(', pos, currentPos()), std::optional<CompilationError>());
+				return std::make_pair(std::make_optional<Token>(TokenType::LEFT_BRACKET, '(', pos, currentPos()), std::optional<CompilationError>());
 			}
 			// )
 			case RIGHTBRACKET_STATE: {
 				unreadLast();
-				return std::make_pair(std::make_optional<Token>(TokenType::RIGHTBRACKET, ')', pos, currentPos()), std::optional<CompilationError>());
+				return std::make_pair(std::make_optional<Token>(TokenType::RIGHT_BRACKET, ')', pos, currentPos()), std::optional<CompilationError>());
 			}
 
 			// 预料之外的状态，如果执行到了这里，说明程序异常
