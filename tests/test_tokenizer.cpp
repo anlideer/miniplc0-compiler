@@ -6,7 +6,7 @@
 #include <vector>
 
 // 下面是示例如何书写测试用例
-TEST_CASE("Test hello world.") {
+TEST_CASE("Test hello world.", "basic") {
 	
 	std::string input = 
 		"begin\n"
@@ -27,7 +27,7 @@ TEST_CASE("Test hello world.") {
 }
 
 // try 1 try
-TEST CASE("Test redefine.")
+TEST_CASE("Test redefine.", "basic")
 {
 	std::string input = 
 	"begin\n"
