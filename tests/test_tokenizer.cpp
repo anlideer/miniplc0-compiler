@@ -25,3 +25,24 @@ TEST_CASE("Test hello world.") {
 	REQUIRE( (result.first == output) );
 	
 }
+
+// try 1 try
+TEST CASE("Test redefine.")
+{
+	std::string input = 
+	"begin\n"
+	"	var a = 1;\n"
+	"	var b = 2;\n"
+	"	b = 3;\n";
+	"	var a = 2;\n"
+	"end\n";
+	std::stringstream ss;
+	ss.str(input);
+	miniplc0::Tokenizer tkz(ss);
+	std::vector<miniplc0::Token> output = {};
+	auto result = tkz.AllTokens();
+	if (result.second.has_value()) {
+		FAIL();
+	}
+	REQUIRE( (result.first == output) );
+}
