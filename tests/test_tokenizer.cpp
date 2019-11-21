@@ -1,5 +1,6 @@
 #include "catch2/catch.hpp"
 #include "tokenizer/tokenizer.h"
+#include "tokenizer/token.h"
 #include "fmt/core.h"
 
 #include <sstream>
