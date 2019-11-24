@@ -38,10 +38,22 @@ namespace miniplc0 {
 		// 完全可以参照 <程序> 编写
 
 		// <常量声明>
+		auto ct = analyseConstantDeclaration();
+		if (ct.has_value())
+			return ct;
+			
 
 		// <变量声明>
+		auto vardec = analyseVariableDeclaration();
+		if (vardec.has_value())
+			return vardec;
 
+		
 		// <语句序列>
+		auto seq = analyseStatementSequence();
+		if (seq.has_value())
+			return seq;
+
 		return {};
 	}
 
@@ -96,20 +108,59 @@ namespace miniplc0 {
 	// 需要补全
 	std::optional<CompilationError> Analyser::analyseVariableDeclaration() {
 		// 变量声明语句可能有一个或者多个
+		while(true)
+		{
+			// 预读？
+			auto next = nextToken();
+			if (!next.has_value())
+				return {};
+			// 'var'
+			if (next.value().GetType() != TokenType::VAR)
+			{
+				unreadToken();
+				return {};
+			}
 
-		// 预读？
+			// <标识符>
+			next = nextToken();
+			if (!next.has_value() || next.value().GetType() != TokenType::IDENTIFIER)
+				return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrNeedIdentifier);
+			if (isDeclared(next.value().GetValueString()))
+				return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrDuplicateDeclaration);
+			addVariable(next.value());
+			auto var_tmp = next;
 
-		// 'var'
+			// 变量可能没有初始化，仍然需要一次预读
+			next = nextToken();
+			if (!next.has_value())
+				return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrNoSemicolon);
 
-		// <标识符>
+			if (next.value().GetType() == TokenType::SEMICOLON)
+			{
+				_instructions.emplace_back(Operation::LIT, 0);
+			}
+			// '='
+			else if (next.value().GetType() != TokenType::EQUAL_SIGN)
+				return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrNoSemicolon);
 
-		// 变量可能没有初始化，仍然需要一次预读
+			else
+			{
+				// '<表达式>'
+				auto exp = analyseExpression();
+				if (exp.has_value())
+					return exp;
 
-		// '='
+				// ';'
+				next = nextToken();
+				if (!next.has_value() || next.value().GetType() != TokenType::SEMICOLON)
+					return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrNoSemicolon);
 
-		// '<表达式>'
+				// load
+				_instructions.emplace_back(Operation::STO, getIndex(var_tmp.value()));
 
-		// ';'
+			}
+
+		}
 		return {};
 	}
 
@@ -134,6 +185,7 @@ namespace miniplc0 {
 			std::optional<CompilationError> err;
 			switch (next.value().GetType()) {
 				// 这里需要你针对不同的预读结果来调用不同的子程序
+
 				// 注意我们没有针对空语句单独声明一个函数，因此可以直接在这里返回
 			default:
 				break;
