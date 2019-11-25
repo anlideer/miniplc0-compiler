@@ -156,7 +156,7 @@ namespace miniplc0 {
 					return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrNoSemicolon);
 
 				// load
-				_instructions.emplace_back(Operation::STO, getIndex(var_tmp.value()));
+				_instructions.emplace_back(Operation::STO, getIndex(var_tmp.value().GetValueString()));
 
 			}
 
@@ -185,8 +185,27 @@ namespace miniplc0 {
 			std::optional<CompilationError> err;
 			switch (next.value().GetType()) {
 				// 这里需要你针对不同的预读结果来调用不同的子程序
-
-				// 注意我们没有针对空语句单独声明一个函数，因此可以直接在这里返回
+				case next.value().GetType() == TokenType::IDENTIFIER:
+				{
+					auto indent = analyseAssignmentStatement();
+					if (ident.has_value())
+						return ident;
+					break;
+				}
+				case next.value().GetType() == TokenType::PRINT:
+				{
+					auto printSt = analyseOutputStatement();
+					if (printSt.has_value())
+						return printSt;
+					break;
+				}
+				// 注意我们没有针对空语句单独声明一个函数，因此可以直接在这里返回 
+				// and "read" on
+				case next.value().GetType() == TokenType::SEMICOLON:
+				{
+					next = nextToken();
+					break;
+				}
 			default:
 				break;
 			}
@@ -201,7 +220,49 @@ namespace miniplc0 {
 		// 这里你要分析常表达式并且计算结果
 		// 注意以下均为常表达式
 		// +1 -1 1
-		// 同时要注意是否溢出
+		// !!! 同时要注意是否溢出
+		auto next = nextToken();
+
+		if (!next.has_value() || (next.value().GetType() != TokenType::PLUS_SIGN && next.value().GetType() != TokenType::MINUS_SIGN && next.value().GetType() != TokenType::UNSIGNED_INTEGER))
+		{
+			return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrIncompleteExpression);
+		}
+
+		// + none -
+		// + 
+		if (next.value().GetType() == TokenType::PLUS_SIGN)
+		{
+			next = nextToken();
+			if (!next.has_value() || next.value().GetType() != TokenType::UNSIGNED_INTEGER)
+				return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrIncompleteExpression);
+			// overflow
+			if (next.value > INT_MAX)
+				return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrIntegerOverflow);
+			out = next.value();
+		}
+		// no
+		else if (next.value().GetType() == TokenType::UNSIGNED_INTEGER)
+		{
+			if (next.value > INT_MAX)
+				return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrIntegerOverflow);
+			out = next.value();
+		}
+		// -
+		else 
+		{
+			next = nextToken();
+			if (!next.has_value() || next.value().GetType() != TokenType::UNSIGNED_INTEGER)
+				return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrIncompleteExpression);
+			next = nextToken();
+			if (!next.has_value() || next.value().GetType() != TokenType::UNSIGNED_INTEGER)
+				return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrIncompleteExpression);
+			// overflow
+			if (-1 * next.value < INT_MIN)
+				return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrIntegerOverflow);
+			out = -1 * next.value();
+		}
+
+
 		return {};
 	}
 
@@ -245,6 +306,35 @@ namespace miniplc0 {
 		// 标识符声明过吗？
 		// 标识符是常量吗？
 		// 需要生成指令吗？
+		auto next = nextToken();
+		if (!next.has_value())
+			return {};
+		if (next.value().GetType() != TokenType::IDENTIFIER)
+			return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrInvalidAssignment);
+		// declared?
+		if (!isDeclared(next.value()))
+			return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrNotDeclared);
+		// constant?
+		if (isConstant(next.value().GetValueString()))
+			return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrAssignToConstant);
+
+		// =
+		auto equl_sign = nextToken();
+		if (!equl_sign.has_value())
+			return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrInvalidAssignment);
+
+		// expression
+		int32_t res;
+		auto exp = analyseExpression(&res);
+		if (exp.has_value())
+			return exp;
+
+		// instructions
+		_instructions.emplace_back(Operation::LIT, res);
+		_instructions.emplace_back(Operation::STO, getIndex(next.value().GetValueString()));
+
+
+
 		return {};
 	}
 
