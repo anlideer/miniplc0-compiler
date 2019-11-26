@@ -36,23 +36,25 @@ namespace miniplc0 {
 	// 需要补全
 	std::optional<CompilationError> Analyser::analyseMain() {
 		// 完全可以参照 <程序> 编写
-
+		std::cout << "ok1\n";
 		// <常量声明>
 		auto ct = analyseConstantDeclaration();
 		if (ct.has_value())
 			return ct;
 			
-
+		std::cout << "ok2\n";
 		// <变量声明>
 		auto vardec = analyseVariableDeclaration();
 		if (vardec.has_value())
 			return vardec;
 
-		
+		std::cout << "ok3\n";
 		// <语句序列>
 		auto seq = analyseStatementSequence();
 		if (seq.has_value())
 			return seq;
+
+		std::cout << "ok4\n";
 
 		return {};
 	}
@@ -129,7 +131,6 @@ namespace miniplc0 {
 				return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrNeedIdentifier);
 			// debug
 			std::cout << "131 line\n";
-			std::cout << std::any_cast<std::string>(next.value()) << "\n";
 			if (isDeclared(next.value().GetValueString()))
 				return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrDuplicateDeclaration);
 			//addVariable(next.value());
