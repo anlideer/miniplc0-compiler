@@ -127,7 +127,7 @@ namespace miniplc0 {
 				return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrNeedIdentifier);
 			if (isDeclared(next.value().GetValueString()))
 				return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrDuplicateDeclaration);
-			addVariable(next.value());
+			//addVariable(next.value());
 			auto var_tmp = next;
 
 			// 变量可能没有初始化，仍然需要一次预读
@@ -137,6 +137,7 @@ namespace miniplc0 {
 
 			if (next.value().GetType() == TokenType::SEMICOLON)
 			{
+				addUninitializedVariable(var_tmp);
 				_instructions.emplace_back(Operation::LIT, 0);
 			}
 			// '='
@@ -145,6 +146,8 @@ namespace miniplc0 {
 
 			else
 			{
+				addVariable(var_tmp.value());
+				_instructions.emplace_back(Operation::LIT, 0);
 				// '<表达式>'
 				auto exp = analyseExpression();
 				if (exp.has_value())
@@ -156,7 +159,8 @@ namespace miniplc0 {
 					return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrNoSemicolon);
 
 				// load
-				_instructions.emplace_back(Operation::STO, getIndex(var_tmp.value().GetValueString()));
+
+				_instructions.emplace_back(Operation::STO, getIndex(var_tmp.GetValueString()));
 
 			}
 
@@ -327,7 +331,7 @@ namespace miniplc0 {
 			return exp;
 
 		// instructions
-		_instructions.emplace_back(Operation::STO, getIndex(next.value().GetValueString()));
+		_instructions.emplace_back(Operation::STO, getIndex(next.GetValueString()));
 
 
 
@@ -444,7 +448,7 @@ namespace miniplc0 {
 				{
 					return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrNotInitialized);
 				}
-				_instructions.emplace_back(Operation::LOD, getIndex(next.value().GetValueString()));
+				_instructions.emplace_back(Operation::LOD, getIndex(next.GetValueString()));
 				break;
 
 			}	
