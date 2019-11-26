@@ -69,6 +69,9 @@ namespace fmt {
 			case miniplc0::ErrInvalidPrint:
 				name = "The output statement is invalid.";
 				break;
+			case miniplc0::ErrNoRightBracket:
+				name = "No matching right bracket.";
+				break;
 			}
 			return format_to(ctx.out(), name);
 		}
