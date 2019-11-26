@@ -129,7 +129,7 @@ namespace miniplc0 {
 				return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrNeedIdentifier);
 			// debug
 			std::cout << "131 line\n";
-			std::cout << std::any_cast<string>(next.value()) << "\n";
+			std::cout << std::any_cast<std::string>(next.value()) << "\n";
 			if (isDeclared(next.value().GetValueString()))
 				return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrDuplicateDeclaration);
 			//addVariable(next.value());
