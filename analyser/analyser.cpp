@@ -187,7 +187,7 @@ namespace miniplc0 {
 				// 这里需要你针对不同的预读结果来调用不同的子程序
 				case  TokenType::IDENTIFIER:
 				{
-					auto indent = analyseAssignmentStatement();
+					auto ident = analyseAssignmentStatement();
 					if (ident.has_value())
 						return ident;
 					break;
@@ -235,17 +235,16 @@ namespace miniplc0 {
 			next = nextToken();
 			if (!next.has_value() || next.value().GetType() != TokenType::UNSIGNED_INTEGER)
 				return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrIncompleteExpression);
-			// overflow
-			if (next.value > INT_MAX)
-				return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrIntegerOverflow);
-			out = next.value();
+			// TODO: overflow
+			
+			out = std::any_cast<int32_t>(next.value());
 		}
 		// no
 		else if (next.value().GetType() == TokenType::UNSIGNED_INTEGER)
 		{
-			if (next.value > INT_MAX)
-				return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrIntegerOverflow);
-			out = next.value();
+			// TODO: overflow
+
+			out = std::any_cast<int32_t>(next.value());
 		}
 		// -
 		else 
@@ -256,10 +255,9 @@ namespace miniplc0 {
 			next = nextToken();
 			if (!next.has_value() || next.value().GetType() != TokenType::UNSIGNED_INTEGER)
 				return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrIncompleteExpression);
-			// overflow
-			if (-1 * next.value < INT_MIN)
-				return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrIntegerOverflow);
-			out = -1 * next.value();
+			// TODO: overflow
+
+			out = -1 * std::any_cast<int32_t>(next.value());
 		}
 
 
@@ -312,7 +310,7 @@ namespace miniplc0 {
 		if (next.value().GetType() != TokenType::IDENTIFIER)
 			return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrInvalidAssignment);
 		// declared?
-		if (!isDeclared(next.value()))
+		if (!isDeclared(next.value().GetValueString()))
 			return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrNotDeclared);
 		// constant?
 		if (isConstant(next.value().GetValueString()))
@@ -325,7 +323,7 @@ namespace miniplc0 {
 
 		// expression
 		int32_t res;
-		auto exp = analyseExpression(&res);
+		auto exp = analyseExpression(res);
 		if (exp.has_value())
 			return exp;
 
