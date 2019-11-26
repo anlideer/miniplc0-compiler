@@ -128,7 +128,7 @@ namespace miniplc0 {
 			if (!next.has_value() || next.value().GetType() != TokenType::IDENTIFIER)
 				return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrNeedIdentifier);
 			// debug
-			std::cout << "131 line\n";
+			std::cout << "131 line" << next.value() << "\n";
 			if (isDeclared(next.value().GetValueString()))
 				return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrDuplicateDeclaration);
 			//addVariable(next.value());
