@@ -137,7 +137,7 @@ namespace miniplc0 {
 
 			if (next.value().GetType() == TokenType::SEMICOLON)
 			{
-				addUninitializedVariable(var_tmp);
+				addUninitializedVariable(var_tmp.value());
 				_instructions.emplace_back(Operation::LIT, 0);
 			}
 			// '='
