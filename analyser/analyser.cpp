@@ -215,7 +215,7 @@ namespace miniplc0 {
 
 	// <常表达式> ::= [<符号>]<无符号整数>
 	// 需要补全
-	std::optional<CompilationError> Analyser::analyseConstantExpression(int32_t &out) {
+	std::optional<CompilationError> Analyser::analyseConstantExpression(int32_t& out) {
 		// out 是常表达式的结果
 		// 这里你要分析常表达式并且计算结果
 		// 注意以下均为常表达式
@@ -322,13 +322,11 @@ namespace miniplc0 {
 			return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrInvalidAssignment);
 
 		// expression
-		int32_t res;
-		auto exp = analyseExpression(res);
+		auto exp = analyseExpression();
 		if (exp.has_value())
 			return exp;
 
 		// instructions
-		_instructions.emplace_back(Operation::LIT, res);
 		_instructions.emplace_back(Operation::STO, getIndex(next.value().GetValueString()));
 
 
