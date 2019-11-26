@@ -185,14 +185,14 @@ namespace miniplc0 {
 			std::optional<CompilationError> err;
 			switch (next.value().GetType()) {
 				// 这里需要你针对不同的预读结果来调用不同的子程序
-				case next.value().GetType() == TokenType::IDENTIFIER:
+				case  TokenType::IDENTIFIER:
 				{
 					auto indent = analyseAssignmentStatement();
 					if (ident.has_value())
 						return ident;
 					break;
 				}
-				case next.value().GetType() == TokenType::PRINT:
+				case TokenType::PRINT:
 				{
 					auto printSt = analyseOutputStatement();
 					if (printSt.has_value())
@@ -201,13 +201,13 @@ namespace miniplc0 {
 				}
 				// 注意我们没有针对空语句单独声明一个函数，因此可以直接在这里返回 
 				// and "read" on
-				case next.value().GetType() == TokenType::SEMICOLON:
+				case TokenType::SEMICOLON:
 				{
 					next = nextToken();
 					break;
 				}
-			default:
-				break;
+				default:
+					break;
 			}
 		}
 		return {};
@@ -372,6 +372,43 @@ namespace miniplc0 {
 	// 需要补全
 	std::optional<CompilationError> Analyser::analyseItem() {
 		// 可以参考 <表达式> 实现
+		auto fac = analyseFactor();
+		if (fac.has_value())
+			return fac;
+
+		while(true)
+		{
+			// pre-read
+			auto next = nextToken();
+			if (!next.has_value())
+				return {};
+			if (next.value().GetType() != TokenType::MULTIPLICATION_SIGN && next.value().GetType() != TokenType::DIVISION_SIGN)
+			{
+				unreadToken();
+				return {};
+			}
+
+			// <factor>
+			fac = analyseFactor();
+			if (fac.has_value())
+				return fac;
+
+			// instructions
+
+			// *
+			if (next.value().GetType() == TokenType::MULTIPLICATION_SIGN)
+			{
+				_instructions.emplace_back(Operation::MUL, 0);
+			}
+			// /
+			else
+			{
+				_instructions.emplace_back(Operation::DIV, 0);
+			}
+
+		}
+
+
 		return {};
 	}
 
@@ -399,8 +436,42 @@ namespace miniplc0 {
 		switch (next.value().GetType()) {
 			// 这里和 <语句序列> 类似，需要根据预读结果调用不同的子程序
 			// 但是要注意 default 返回的是一个编译错误
-		default:
-			return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrIncompleteExpression);
+			case TokenType::IDENTIFIER:
+			{
+				// declared?
+				if(!isDeclared(next.value().GetValueString()))
+				{
+					return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrNotDeclared);
+				}
+				// initialized?
+				else if (isUninitializedVariable(next.value().GetValueString()))
+				{
+					return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrNotInitialized);
+				}
+				_instructions.emplace_back(Operation::LOD, getIndex(next.value().GetValueString()));
+				break;
+
+			}	
+			case TokenType::UNSIGNED_INTEGER:
+			{
+				// TODO: overflow
+				
+				_instructions.emplace_back(Operation::LIT, next.value());
+				break;
+			}
+			case TokenType::LEFT_BRACKET:
+			{
+				auto exp = analyseExpression();
+				if (exp.has_value())
+					return exp;
+				next = nextToken();
+				if (!next.has_value())
+					return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrNORightBracket);
+				break;
+			}
+
+			default:
+				return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrIncompleteExpression);
 		}
 
 		// 取负
