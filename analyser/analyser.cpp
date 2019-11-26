@@ -160,7 +160,7 @@ namespace miniplc0 {
 
 				// load
 
-				_instructions.emplace_back(Operation::STO, getIndex(var_tmp.GetValueString()));
+				_instructions.emplace_back(Operation::STO, getIndex(var_tmp.value().GetValueString()));
 
 			}
 
@@ -331,7 +331,7 @@ namespace miniplc0 {
 			return exp;
 
 		// instructions
-		_instructions.emplace_back(Operation::STO, getIndex(next.GetValueString()));
+		_instructions.emplace_back(Operation::STO, getIndex(next.value().GetValueString()));
 
 
 
@@ -448,7 +448,7 @@ namespace miniplc0 {
 				{
 					return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrNotInitialized);
 				}
-				_instructions.emplace_back(Operation::LOD, getIndex(next.GetValueString()));
+				_instructions.emplace_back(Operation::LOD, getIndex(next.value().GetValueString()));
 				break;
 
 			}	
