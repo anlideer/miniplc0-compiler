@@ -78,6 +78,8 @@ namespace miniplc0 {
 			next = nextToken();
 			if (!next.has_value() || next.value().GetType() != TokenType::IDENTIFIER)
 				return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrNeedIdentifier);
+			// debug
+			std::cout << "81 line" << endl;
 			if (isDeclared(next.value().GetValueString()))
 				return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrDuplicateDeclaration);
 			addConstant(next.value());
@@ -125,6 +127,8 @@ namespace miniplc0 {
 			next = nextToken();
 			if (!next.has_value() || next.value().GetType() != TokenType::IDENTIFIER)
 				return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrNeedIdentifier);
+			// debug
+			std::cout << "131 line" << endl;
 			if (isDeclared(next.value().GetValueString()))
 				return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrDuplicateDeclaration);
 			//addVariable(next.value());
@@ -159,7 +163,8 @@ namespace miniplc0 {
 					return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrNoSemicolon);
 
 				// load
-
+				// debug
+				std::cout << "167 line" << endl;
 				_instructions.emplace_back(Operation::STO, getIndex(var_tmp.value().GetValueString()));
 
 			}
@@ -314,9 +319,13 @@ namespace miniplc0 {
 		if (next.value().GetType() != TokenType::IDENTIFIER)
 			return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrInvalidAssignment);
 		// declared?
+		// debug
+		std::cout << "323 line" << endl;
 		if (!isDeclared(next.value().GetValueString()))
 			return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrNotDeclared);
 		// constant?
+		// debug
+		std::cout << "328 line" << endl;
 		if (isConstant(next.value().GetValueString()))
 			return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrAssignToConstant);
 
@@ -329,7 +338,9 @@ namespace miniplc0 {
 		auto exp = analyseExpression();
 		if (exp.has_value())
 			return exp;
-
+			
+		// debug
+		std::cout << "343 line" << endl;
 		// instructions
 		_instructions.emplace_back(Operation::STO, getIndex(next.value().GetValueString()));
 
@@ -438,16 +449,22 @@ namespace miniplc0 {
 			// 但是要注意 default 返回的是一个编译错误
 			case TokenType::IDENTIFIER:
 			{
+				// debug
+				std::cout << "453 line" << endl;
 				// declared?
 				if(!isDeclared(next.value().GetValueString()))
 				{
 					return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrNotDeclared);
 				}
 				// initialized?
-				else if (isUninitializedVariable(next.value().GetValueString()))
+				// debug
+				std::cout << "461 line" << endl;
+				if (isUninitializedVariable(next.value().GetValueString()))
 				{
 					return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrNotInitialized);
 				}
+				// debug
+				std::cout << "467 line" << endl;
 				_instructions.emplace_back(Operation::LOD, getIndex(next.value().GetValueString()));
 				break;
 
