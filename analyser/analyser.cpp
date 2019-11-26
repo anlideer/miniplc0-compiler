@@ -215,7 +215,7 @@ namespace miniplc0 {
 
 	// <常表达式> ::= [<符号>]<无符号整数>
 	// 需要补全
-	std::optional<CompilationError> Analyser::analyseConstantExpression(int32_t& out) {
+	std::optional<CompilationError> Analyser::analyseConstantExpression(int32_t &out) {
 		// out 是常表达式的结果
 		// 这里你要分析常表达式并且计算结果
 		// 注意以下均为常表达式
@@ -454,7 +454,7 @@ namespace miniplc0 {
 			{
 				// TODO: overflow
 				
-				_instructions.emplace_back(Operation::LIT, next.value());
+				_instructions.emplace_back(Operation::LIT, std::any_cast<int32_t>(next.value()));
 				break;
 			}
 			case TokenType::LEFT_BRACKET:
@@ -464,7 +464,7 @@ namespace miniplc0 {
 					return exp;
 				next = nextToken();
 				if (!next.has_value())
-					return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrNORightBracket);
+					return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrNoRightBracket);
 				break;
 			}
 
