@@ -121,7 +121,6 @@ namespace miniplc0 {
 				return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrNeedIdentifier);
 			if (isDeclared(next.value().GetValueString()))
 				return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrDuplicateDeclaration);
-			//addVariable(next.value());
 			auto var_tmp = next;
 
 			// 变量可能没有初始化，仍然需要一次预读
@@ -133,13 +132,13 @@ namespace miniplc0 {
 			{
 				addUninitializedVariable(var_tmp.value());
 				_instructions.emplace_back(Operation::LIT, 0);
+				return {};
 			}
 			// '='
 			else if (next.value().GetType() != TokenType::EQUAL_SIGN)
 				return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrNoSemicolon);
 
-			else
-			{
+
 				addVariable(var_tmp.value());
 				_instructions.emplace_back(Operation::LIT, 0);
 				// '<表达式>'
@@ -155,7 +154,6 @@ namespace miniplc0 {
 				// load
 				_instructions.emplace_back(Operation::STO, getIndex(var_tmp.value().GetValueString()));
 
-			}
 
 		}
 		return {};
