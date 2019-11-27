@@ -152,7 +152,7 @@ namespace miniplc0 {
 				return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrNoSemicolon);
 
 			// load
-			_instructions.emplace_back(Operation::STO, getIndex(var_tmp.value().GetValueString()));
+			//_instructions.emplace_back(Operation::STO, getIndex(var_tmp.value().GetValueString()));
 
 
 		}
