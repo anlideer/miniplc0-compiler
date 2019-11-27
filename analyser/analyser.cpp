@@ -36,25 +36,21 @@ namespace miniplc0 {
 	// 需要补全
 	std::optional<CompilationError> Analyser::analyseMain() {
 		// 完全可以参照 <程序> 编写
-		std::cout << "ok1\n";
 		// <常量声明>
 		auto ct = analyseConstantDeclaration();
 		if (ct.has_value())
 			return ct;
 			
-		std::cout << "ok2\n";
 		// <变量声明>
 		auto vardec = analyseVariableDeclaration();
 		if (vardec.has_value())
 			return vardec;
 
-		std::cout << "ok3\n";
 		// <语句序列>
 		auto seq = analyseStatementSequence();
 		if (seq.has_value())
 			return seq;
 
-		std::cout << "ok4\n";
 
 		return {};
 	}
@@ -66,7 +62,6 @@ namespace miniplc0 {
 
 		// 常量声明语句可能有 0 或无数个
 		while (true) {
-			std::cout << "readnext1\n";
 			// 预读一个 token，不然不知道是否应该用 <常量声明> 推导
 			auto next = nextToken();
 			if (!next.has_value())
@@ -76,28 +71,22 @@ namespace miniplc0 {
 				unreadToken();
 				return {};
 			}
-			std::cout << "readnext2\n";
 			// <常量声明语句>
 			next = nextToken();
 			if (!next.has_value() || next.value().GetType() != TokenType::IDENTIFIER)
 				return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrNeedIdentifier);
-			// debug
-			std::cout << "81 line\n";
 			if (isDeclared(next.value().GetValueString()))
 				return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrDuplicateDeclaration);
 			addConstant(next.value());
-			std::cout << "readnext3\n";
 			// '='
 			next = nextToken();
 			if (!next.has_value() || next.value().GetType() != TokenType::EQUAL_SIGN)
 				return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrConstantNeedValue);
-			std::cout << "enter constant expression\n";
 			// <常表达式>
 			int32_t val;
 			auto err = analyseConstantExpression(val);
 			if (err.has_value())
 				return err;
-			std::cout << "return from exp\n";
 			// ';'
 			next = nextToken();
 			if (!next.has_value() || next.value().GetType() != TokenType::SEMICOLON)
@@ -130,8 +119,6 @@ namespace miniplc0 {
 			next = nextToken();
 			if (!next.has_value() || next.value().GetType() != TokenType::IDENTIFIER)
 				return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrNeedIdentifier);
-			// debug
-			std::cout << "131 line\n";
 			if (isDeclared(next.value().GetValueString()))
 				return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrDuplicateDeclaration);
 			//addVariable(next.value());
@@ -166,8 +153,6 @@ namespace miniplc0 {
 					return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrNoSemicolon);
 
 				// load
-				// debug
-				std::cout << "167 line\n";
 				_instructions.emplace_back(Operation::STO, getIndex(var_tmp.value().GetValueString()));
 
 			}
@@ -233,7 +218,6 @@ namespace miniplc0 {
 		// 注意以下均为常表达式
 		// +1 -1 1
 		// !!! 同时要注意是否溢出
-		std::cout << "next1 in constexp\n";
 		auto next = nextToken();
 
 		if (!next.has_value() || (next.value().GetType() != TokenType::PLUS_SIGN && next.value().GetType() != TokenType::MINUS_SIGN && next.value().GetType() != TokenType::UNSIGNED_INTEGER))
@@ -243,7 +227,6 @@ namespace miniplc0 {
 
 		// + none -
 		// + 
-		std::cout << "enter if elseif else\n";
 		if (next.value().GetType() == TokenType::PLUS_SIGN)
 		{
 			next = nextToken();
@@ -251,15 +234,13 @@ namespace miniplc0 {
 				return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrIncompleteExpression);
 			// TODO: overflow
 			
-			out = std::any_cast<int>(next.value());
+			out = std::any_cast<int32_t>(next.value().GetValue());
 		}
 		// no
 		else if (next.value().GetType() == TokenType::UNSIGNED_INTEGER)
 		{
 			// TODO: overflow
-			std::cout << "value: ";
-			std::cout << next.value().GetValueString() << "\n";
-			out = std::any_cast<int>(next.value().GetValue());
+			out = std::any_cast<int32_t>(next.value().GetValue());
 		}
 		// -
 		else 
@@ -272,9 +253,8 @@ namespace miniplc0 {
 				return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrIncompleteExpression);
 			// TODO: overflow
 
-			out = -1 * std::any_cast<int>(next.value());
+			out = -1 * std::any_cast<int32_t>(next.value().GetValue());
 		}
-		std::cout << "success return\n";
 
 		return {};
 	}
@@ -325,13 +305,9 @@ namespace miniplc0 {
 		if (next.value().GetType() != TokenType::IDENTIFIER)
 			return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrInvalidAssignment);
 		// declared?
-		// debug
-		std::cout << "323 line\n" ;
 		if (!isDeclared(next.value().GetValueString()))
 			return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrNotDeclared);
 		// constant?
-		// debug
-		std::cout << "328 line\n";
 		if (isConstant(next.value().GetValueString()))
 			return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrAssignToConstant);
 
@@ -345,8 +321,6 @@ namespace miniplc0 {
 		if (exp.has_value())
 			return exp;
 			
-		// debug
-		std::cout << "343 line\n" ;
 		// instructions
 		_instructions.emplace_back(Operation::STO, getIndex(next.value().GetValueString()));
 
@@ -455,22 +429,16 @@ namespace miniplc0 {
 			// 但是要注意 default 返回的是一个编译错误
 			case TokenType::IDENTIFIER:
 			{
-				// debug
-				std::cout << "453 line\n" ;
 				// declared?
 				if(!isDeclared(next.value().GetValueString()))
 				{
 					return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrNotDeclared);
 				}
 				// initialized?
-				// debug
-				std::cout << "461 line\n" ;
 				if (isUninitializedVariable(next.value().GetValueString()))
 				{
 					return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrNotInitialized);
 				}
-				// debug
-				std::cout << "467 line\n" ;
 				_instructions.emplace_back(Operation::LOD, getIndex(next.value().GetValueString()));
 				break;
 
@@ -479,7 +447,7 @@ namespace miniplc0 {
 			{
 				// TODO: overflow
 				
-				_instructions.emplace_back(Operation::LIT, std::any_cast<int32_t>(next.value()));
+				_instructions.emplace_back(Operation::LIT, std::any_cast<int32_t>(next.value().GetValue()));
 				break;
 			}
 			case TokenType::LEFT_BRACKET:
