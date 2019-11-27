@@ -493,8 +493,8 @@ namespace miniplc0 {
 	void Analyser::_add(const Token& tk, std::map<std::string, int32_t>& mp) {
 		if (tk.GetType() != TokenType::IDENTIFIER)
 			DieAndPrint("only identifier can be added to the table.");
-		mp[tk.GetValueString()] = _nextTokenIndex;
-		_nextTokenIndex++;
+		mp[tk.GetValueString()] = _indexCnt;
+		_indexCnt++;
 	}
 
 	void Analyser::addVariable(const Token& tk) {
