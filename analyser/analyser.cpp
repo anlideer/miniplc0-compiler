@@ -434,7 +434,7 @@ namespace miniplc0 {
 					return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrNotDeclared);
 				}
 				// initialized?
-				if (isUninitializedVariable(next.value().GetValueString()))
+				if (!isInitializedVariable(next.value().GetValueString()))
 				{
 					return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrNotInitialized);
 				}
