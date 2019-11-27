@@ -108,11 +108,13 @@ namespace miniplc0 {
 			// 预读？
 			auto next = nextToken();
 			if (!next.has_value())
+			{
+				std::cout << "return\n";
 				return {};
+			}
 			// 'var'
 			if (next.value().GetType() != TokenType::VAR)
 			{
-				std::cout << "unread\n";
 				unreadToken();
 				return {};
 			}
