@@ -145,6 +145,7 @@ namespace miniplc0 {
 
 			addVariable(var_tmp.value());
 			addSignal(var_tmp.value());
+			_instructions.emplace_back(Operation::LIT, 0);
 			// '<表达式>'
 			auto exp = analyseExpression();
 			if (exp.has_value())
@@ -155,7 +156,7 @@ namespace miniplc0 {
 				return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrNoSemicolon);
 
 			// load
-			//_instructions.emplace_back(Operation::STO, getIndex(var_tmp.value().GetValueString()));
+			_instructions.emplace_back(Operation::STO, getIndex(var_tmp.value().GetValueString()));
 
 
 		}
