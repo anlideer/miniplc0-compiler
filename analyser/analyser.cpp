@@ -142,7 +142,6 @@ namespace miniplc0 {
 
 
 			addVariable(var_tmp.value());
-			std::cout << "add var " << var_tmp.value().GetValueString() << "\n";
 			// '<表达式>'
 			auto exp = analyseExpression();
 			if (exp.has_value())
