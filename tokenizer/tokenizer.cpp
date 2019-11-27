@@ -187,6 +187,14 @@ namespace miniplc0 {
 					{
 						return std::make_pair(std::optional<Token>(), std::make_optional<CompilationError>(pos, ErrorCode::ErrIntegerOverflow));					
 					}
+					catch(std::out_of_range&)
+					{
+						return std::make_pair(std::optional<Token>(), std::make_optional<CompilationError>(pos, ErrorCode::ErrIntegerOverflow));
+					}
+					catch(...)
+					{
+						return std::make_pair(std::optional<Token>(), std::make_optional<CompilationError>(pos, ErrorCode::ErrIntegerOverflow));
+					}
 				}
 
 				break;
