@@ -109,7 +109,6 @@ namespace miniplc0 {
 			auto next = nextToken();
 			if (!next.has_value())
 			{
-				std::cout << "return\n";
 				return {};
 			}
 			// 'var'
@@ -157,6 +156,7 @@ namespace miniplc0 {
 			// load
 			_instructions.emplace_back(Operation::STO, getIndex(var_tmp.value().GetValueString()));
 
+			std::cout << "read: " << var_tmp.value().GetValueString() << "\n";
 
 		}
 		return {};
