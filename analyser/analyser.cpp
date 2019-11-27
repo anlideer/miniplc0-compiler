@@ -78,6 +78,7 @@ namespace miniplc0 {
 			if (isDeclared(next.value().GetValueString()))
 				return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrDuplicateDeclaration);
 			addConstant(next.value());
+			addSignal(next.value());
 			// '='
 			next = nextToken();
 			if (!next.has_value() || next.value().GetType() != TokenType::EQUAL_SIGN)
@@ -133,6 +134,7 @@ namespace miniplc0 {
 			if (next.value().GetType() == TokenType::SEMICOLON)
 			{
 				addUninitializedVariable(var_tmp.value());
+				addSignal(var_tmp.value());
 				_instructions.emplace_back(Operation::LIT, 0);
 				continue;
 			}
@@ -142,6 +144,7 @@ namespace miniplc0 {
 
 
 			addVariable(var_tmp.value());
+			addSignal(var_tmp.value());
 			// '<表达式>'
 			auto exp = analyseExpression();
 			if (exp.has_value())
@@ -505,13 +508,21 @@ namespace miniplc0 {
 		_add(tk, _uninitialized_vars);
 	}
 
+	void Analyser::addSignal(const Token& tk)
+	{
+		_add(tk, _allsigns);
+	}
+
 	int32_t Analyser::getIndex(const std::string& s) {
+		return _allsigns[s];
+		/*
 		if (_uninitialized_vars.find(s) != _uninitialized_vars.end())
 			return _uninitialized_vars[s];
 		else if (_vars.find(s) != _vars.end())
 			return _vars[s];
 		else
 			return _consts[s];
+		*/
 	}
 
 	bool Analyser::isDeclared(const std::string& s) {

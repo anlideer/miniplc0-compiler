@@ -71,6 +71,7 @@ namespace miniplc0 {
 		void addVariable(const Token&);
 		void addConstant(const Token&);
 		void addUninitializedVariable(const Token&);
+		void addSignal(const Token&);
 		// 是否被声明过
 		bool isDeclared(const std::string&);
 		// 是否是未初始化的变量
@@ -95,6 +96,7 @@ namespace miniplc0 {
 		std::map<std::string, int32_t> _uninitialized_vars;
 		std::map<std::string, int32_t> _vars;
 		std::map<std::string, int32_t> _consts;
+		std::map<std::string, int32_t> _allsigns;
 		// 下一个 token 在栈的偏移
 		int32_t _nextTokenIndex;
 	};
