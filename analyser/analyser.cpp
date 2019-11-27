@@ -66,6 +66,7 @@ namespace miniplc0 {
 
 		// 常量声明语句可能有 0 或无数个
 		while (true) {
+			std::cout << "readnext1\n";
 			// 预读一个 token，不然不知道是否应该用 <常量声明> 推导
 			auto next = nextToken();
 			if (!next.has_value())
@@ -75,7 +76,7 @@ namespace miniplc0 {
 				unreadToken();
 				return {};
 			}
-
+			std::cout << "readnext2\n";
 			// <常量声明语句>
 			next = nextToken();
 			if (!next.has_value() || next.value().GetType() != TokenType::IDENTIFIER)
@@ -85,7 +86,7 @@ namespace miniplc0 {
 			if (isDeclared(next.value().GetValueString()))
 				return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrDuplicateDeclaration);
 			addConstant(next.value());
-
+			std::cout << "readnext3\n";
 			// '='
 			next = nextToken();
 			if (!next.has_value() || next.value().GetType() != TokenType::EQUAL_SIGN)
