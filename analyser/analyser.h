@@ -82,6 +82,7 @@ namespace miniplc0 {
 		bool isConstant(const std::string&);
 		// 获得 {变量，常量} 在栈上的偏移
 		int32_t getIndex(const std::string&);
+		int32_t getStackIndex(const std::string&);
 	private:
 		std::vector<Token> _tokens;
 		std::size_t _offset;

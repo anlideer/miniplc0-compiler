@@ -156,7 +156,7 @@ namespace miniplc0 {
 				return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrNoSemicolon);
 
 			// load
-			_instructions.emplace_back(Operation::STO, getIndex(var_tmp.value().GetValueString()));
+			_instructions.emplace_back(Operation::STO, getStackIndex(var_tmp.value().GetValueString()));
 
 
 		}
@@ -324,7 +324,7 @@ namespace miniplc0 {
 			return exp;
 			
 		// instructions
-		_instructions.emplace_back(Operation::STO, getIndex(next.value().GetValueString()));
+		_instructions.emplace_back(Operation::STO, getStackIndex(next.value().GetValueString()));
 		addVariable(next.value());
 
 
@@ -442,7 +442,7 @@ namespace miniplc0 {
 				{
 					return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrNotInitialized);
 				}
-				_instructions.emplace_back(Operation::LOD, getIndex(next.value().GetValueString()));
+				_instructions.emplace_back(Operation::LOD, getStackIndex(next.value().GetValueString()));
 				break;
 
 			}	
@@ -518,15 +518,18 @@ namespace miniplc0 {
 	}
 
 	int32_t Analyser::getIndex(const std::string& s) {
-		return _allsigns[s];
-		/*
+
 		if (_uninitialized_vars.find(s) != _uninitialized_vars.end())
 			return _uninitialized_vars[s];
 		else if (_vars.find(s) != _vars.end())
 			return _vars[s];
 		else
 			return _consts[s];
-		*/
+	}
+
+	int32_t Analyser::getStackIndex(const std::string& s)
+	{
+		return _allsigns[s];
 	}
 
 	bool Analyser::isDeclared(const std::string& s) {
