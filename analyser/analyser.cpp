@@ -104,7 +104,6 @@ namespace miniplc0 {
 		// 变量声明语句可能有一个或者多个
 		while(true)
 		{
-			std::cout << "loop\n";
 			// 预读？
 			auto next = nextToken();
 			if (!next.has_value())
@@ -135,7 +134,7 @@ namespace miniplc0 {
 			{
 				addUninitializedVariable(var_tmp.value());
 				_instructions.emplace_back(Operation::LIT, 0);
-				return {};
+				continue;
 			}
 			// '='
 			if (next.value().GetType() != TokenType::EQUAL_SIGN)
@@ -156,7 +155,6 @@ namespace miniplc0 {
 			// load
 			_instructions.emplace_back(Operation::STO, getIndex(var_tmp.value().GetValueString()));
 
-			std::cout << "read: " << var_tmp.value().GetValueString() << "\n";
 
 		}
 		return {};
