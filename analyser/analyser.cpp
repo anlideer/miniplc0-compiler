@@ -258,7 +258,7 @@ namespace miniplc0 {
 		{
 			// TODO: overflow
 
-			out = std::any_cast<int>(next.value());
+			out = std::any_cast<int>(next.value().GetValueString());
 		}
 		// -
 		else 
