@@ -104,6 +104,7 @@ namespace miniplc0 {
 		// 变量声明语句可能有一个或者多个
 		while(true)
 		{
+			std::cout << "loop\n";
 			// 预读？
 			auto next = nextToken();
 			if (!next.has_value())
@@ -111,6 +112,7 @@ namespace miniplc0 {
 			// 'var'
 			if (next.value().GetType() != TokenType::VAR)
 			{
+				std::cout << "unread\n";
 				unreadToken();
 				return {};
 			}
