@@ -142,8 +142,7 @@ namespace miniplc0 {
 
 
 			addVariable(var_tmp.value());
-			std::cout << "add variable\n";
-			_instructions.emplace_back(Operation::LIT, 0);
+			cout << "add var " << var_tmp.value().GetValueString() << "\n";
 			// '<表达式>'
 			auto exp = analyseExpression();
 			if (exp.has_value())
@@ -437,6 +436,7 @@ namespace miniplc0 {
 				// initialized?
 				if (!isInitializedVariable(next.value().GetValueString()))
 				{
+					std::cout << next.value().GetValueString() << "\n";
 					return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrNotInitialized);
 				}
 				_instructions.emplace_back(Operation::LOD, getIndex(next.value().GetValueString()));
