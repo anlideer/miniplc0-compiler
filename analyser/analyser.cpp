@@ -513,7 +513,7 @@ namespace miniplc0 {
 	{
 		if (tk.GetType() != TokenType::IDENTIFIER)
 			DieAndPrint("only identifier can be added to the table.");
-		mp[tk.GetValueString()] = _indexCnt;
+		_allsigns[tk.GetValueString()] = _indexCnt;
 		_indexCnt++;
 	}
 
