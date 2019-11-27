@@ -153,6 +153,14 @@ namespace miniplc0 {
 					{
 						return std::make_pair(std::optional<Token>(), std::make_optional<CompilationError>(pos, ErrorCode::ErrIntegerOverflow));					
 					}
+					catch(std::out_of_range&)
+					{
+						return std::make_pair(std::optional<Token>(), std::make_optional<CompilationError>(pos, ErrorCode::ErrIntegerOverflow));
+					}
+					catch(...)
+					{
+						return std::make_pair(std::optional<Token>(), std::make_optional<CompilationError>(pos, ErrorCode::ErrIntegerOverflow));
+					}
 				}
 				// 如果读到的字符是数字，则存储读到的字符
 				else if (miniplc0::isdigit(current_char.value()))
