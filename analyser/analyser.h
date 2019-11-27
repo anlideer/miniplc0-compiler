@@ -99,6 +99,6 @@ namespace miniplc0 {
 		std::map<std::string, int32_t> _allsigns;
 		// 下一个 token 在栈的偏移
 		int32_t _nextTokenIndex;
-		int32_t _indexCnt;
+		int32_t _indexCnt = 0;
 	};
 }
