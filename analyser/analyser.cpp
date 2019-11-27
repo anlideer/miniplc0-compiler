@@ -257,8 +257,9 @@ namespace miniplc0 {
 		else if (next.value().GetType() == TokenType::UNSIGNED_INTEGER)
 		{
 			// TODO: overflow
-
-			out = std::any_cast<int>(next.value().GetValueString());
+			std::cout << "value: ";
+			std::cout << next.value().GetValueString() << "\n";
+			out = std::any_cast<int>(next.value().GetValue());
 		}
 		// -
 		else 
