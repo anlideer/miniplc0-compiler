@@ -322,6 +322,7 @@ namespace miniplc0 {
 			
 		// instructions
 		_instructions.emplace_back(Operation::STO, getIndex(next.value().GetValueString()));
+		addVariable(next.value());
 
 
 
