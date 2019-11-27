@@ -434,9 +434,8 @@ namespace miniplc0 {
 					return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrNotDeclared);
 				}
 				// initialized?
-				if (!isInitializedVariable(next.value().GetValueString()))
+				if (!isInitializedVariable(next.value().GetValueString()) && !isConstant(next.value().GetValueString()))
 				{
-					std::cout << next.value().GetValueString() << "\n";
 					return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrNotInitialized);
 				}
 				_instructions.emplace_back(Operation::LOD, getIndex(next.value().GetValueString()));
