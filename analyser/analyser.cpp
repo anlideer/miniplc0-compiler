@@ -91,13 +91,13 @@ namespace miniplc0 {
 			next = nextToken();
 			if (!next.has_value() || next.value().GetType() != TokenType::EQUAL_SIGN)
 				return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrConstantNeedValue);
-
+			std::cout << "enter constant expression\n";
 			// <常表达式>
 			int32_t val;
 			auto err = analyseConstantExpression(val);
 			if (err.has_value())
 				return err;
-
+			std::cout << "return from exp\n";
 			// ';'
 			next = nextToken();
 			if (!next.has_value() || next.value().GetType() != TokenType::SEMICOLON)
@@ -233,6 +233,7 @@ namespace miniplc0 {
 		// 注意以下均为常表达式
 		// +1 -1 1
 		// !!! 同时要注意是否溢出
+		std::cout << "next1 in constexp\n";
 		auto next = nextToken();
 
 		if (!next.has_value() || (next.value().GetType() != TokenType::PLUS_SIGN && next.value().GetType() != TokenType::MINUS_SIGN && next.value().GetType() != TokenType::UNSIGNED_INTEGER))
@@ -242,6 +243,7 @@ namespace miniplc0 {
 
 		// + none -
 		// + 
+		std::cout << "enter if elseif else\n";
 		if (next.value().GetType() == TokenType::PLUS_SIGN)
 		{
 			next = nextToken();
@@ -249,14 +251,14 @@ namespace miniplc0 {
 				return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrIncompleteExpression);
 			// TODO: overflow
 			
-			out = std::any_cast<int32_t>(next.value());
+			out = std::any_cast<int>(next.value());
 		}
 		// no
 		else if (next.value().GetType() == TokenType::UNSIGNED_INTEGER)
 		{
 			// TODO: overflow
 
-			out = std::any_cast<int32_t>(next.value());
+			out = std::any_cast<int>(next.value());
 		}
 		// -
 		else 
@@ -269,9 +271,9 @@ namespace miniplc0 {
 				return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrIncompleteExpression);
 			// TODO: overflow
 
-			out = -1 * std::any_cast<int32_t>(next.value());
+			out = -1 * std::any_cast<int>(next.value());
 		}
-
+		std::cout << "success return\n";
 
 		return {};
 	}
