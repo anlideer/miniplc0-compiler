@@ -135,24 +135,23 @@ namespace miniplc0 {
 				return {};
 			}
 			// '='
-			else if (next.value().GetType() != TokenType::EQUAL_SIGN)
+			if (next.value().GetType() != TokenType::EQUAL_SIGN)
 				return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrNoSemicolon);
 
 
-				addVariable(var_tmp.value());
-				_instructions.emplace_back(Operation::LIT, 0);
-				// '<表达式>'
-				auto exp = analyseExpression();
-				if (exp.has_value())
-					return exp;
+			addVariable(var_tmp.value());
+			_instructions.emplace_back(Operation::LIT, 0);
+			// '<表达式>'
+			auto exp = analyseExpression();
+			if (exp.has_value())
+				return exp;
+			// ';'
+			next = nextToken();
+			if (!next.has_value() || next.value().GetType() != TokenType::SEMICOLON)
+				return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrNoSemicolon);
 
-				// ';'
-				next = nextToken();
-				if (!next.has_value() || next.value().GetType() != TokenType::SEMICOLON)
-					return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrNoSemicolon);
-
-				// load
-				_instructions.emplace_back(Operation::STO, getIndex(var_tmp.value().GetValueString()));
+			// load
+			_instructions.emplace_back(Operation::STO, getIndex(var_tmp.value().GetValueString()));
 
 
 		}
